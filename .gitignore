@@ -1,0 +1,5 @@
+Jute_Pest_Dataset/
+__pycache__/
+*.pth
+*.pt
+.DS_Store
