@@ -1,6 +1,7 @@
 import random
 import time
 import copy
+import csv
 
 import matplotlib.pyplot as plt
 import torch
@@ -21,6 +22,7 @@ NUM_CLASSES = 17
 
 PLOT_FILE = "optimizer_comparison_modelB.png"
 MODEL_FILE = "optimizer_comparison_modelB_adam_best.pth"
+ADAM_CSV_FILE = "optimizer_comparison_modelB_adam_history.csv"
 
 EXPERIMENTS = {
     "Adam": {
@@ -186,6 +188,9 @@ def run_experiment(
     history = {
         "train_loss": [],
         "val_loss": [],
+        "train_accuracy": [],
+        "val_accuracy": [],
+        "epoch_time_seconds": [],
     }
 
     best_val_loss = float("inf")
@@ -219,6 +224,9 @@ def run_experiment(
 
         history["train_loss"].append(train_loss)
         history["val_loss"].append(val_loss)
+        history["train_accuracy"].append(train_accuracy)
+        history["val_accuracy"].append(val_accuracy)
+        history["epoch_time_seconds"].append(epoch_time)
 
         # Save the best weights in memory for Adam only.
         if name == "Adam" and val_loss < best_val_loss:
@@ -258,6 +266,23 @@ def run_experiment(
             f"{best_val_accuracy:.2f}%"
         )
         print(f"Checkpoint: {MODEL_FILE}")
+
+        with open(ADAM_CSV_FILE, "w", newline="", encoding="utf-8") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow([
+                "epoch", "train_loss", "val_loss", "train_accuracy_percent",
+                "val_accuracy_percent", "epoch_time_seconds",
+            ])
+            for epoch in range(EPOCHS):
+                writer.writerow([
+                    epoch + 1,
+                    history["train_loss"][epoch],
+                    history["val_loss"][epoch],
+                    history["train_accuracy"][epoch],
+                    history["val_accuracy"][epoch],
+                    history["epoch_time_seconds"][epoch],
+                ])
+        print(f"Adam training history saved: {ADAM_CSV_FILE}")
 
     return history
 
@@ -357,6 +382,7 @@ def main():
     print("=" * 65)
     print(f"Plot: {PLOT_FILE}")
     print(f"Best Adam model: {MODEL_FILE}")
+    print(f"Adam history CSV: {ADAM_CSV_FILE}")
 
 
 if __name__ == "__main__":
