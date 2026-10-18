@@ -13,7 +13,7 @@ def get_dataloaders(batch_size=32):
     ])
 
     # 2. Base dataset path
-    base_path = r"D:\5th Semester\Pattern Recognition(3)\Assignment 3\Jute_Pest_Dataset\Jute_Pest_Dataset"
+    base_path = r"C:\Users\chani\OneDrive\Documents\Uni\Semester 5\EN3150 - Pattern Recognition\Jute_Pest_Dataset"
 
     # 3. Load folders
     train_data = datasets.ImageFolder(root=f"{base_path}\\train", transform=transform)
